@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="img-src 'self' data:; default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src	https://fonts.gstatic.com;">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body>
+
+  <!-- Alerthez tartozó SVG ikonok -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+    </symbol>
+    <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+    </symbol>
+    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+    </symbol>
+  </svg>
+
+  
+  <!-- Fejléc -->
+  <header class="py-3">
+    <div class="container">
+      <div class="d-flex align-items-center">
+        <div class="flex-shrink-0">
+          <img src="images/lubexpert-logo-150px.png" width="150" height="77" alt="Lubexpert Árajánlat App">
+        </div>
+        <div class="flex-grow-1 text-center text-uppercase">
+          <h1>Árajánlat App</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigáció -->
+  <nav class="navbar navbar-expand-md">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+  
+    <div class="collapse navbar-collapse" id="navbarToggler">
+      <ul class="navbar-nav nav-fill w-100">
+        <li class="nav-item">
+          <a class="nav-link active" href="#excel">Excel betöltése <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#tetelek">Tételek kiválasztása</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#cegadatok">Cég adatai</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#valtozok">További változók</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#kedvezmenyek">Kedvezmények</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Tartalom -->
+  <div class="content tartalom">
+
+    <!-- Loader -->
+    <div class="loader position-absolute top-50 start-50 translate-middle">
+      <div class="spinner-grow text-warning" role="status">
+        <span class="visually-hidden">Betöltés...</span>
+      </div>
+    </div>
+
+  <section id="excel">
+    <div class="wrapper">
+      <div class="drop">
+        <div class="cont">
+          <i class="fas fa-cloud-upload-alt fa-5x"></i>
+          <div class="tit">
+            Húzza ide
+          </div>
+          <div class="desc">
+            az Excel fájlt, vagy
+          </div>
+          <div class="browse">
+            kattintson ide a tallózáshoz
+          </div>
+        </div>
+        <input id="files" name="files[]" type="file" />
+      </div>
+    </div>
+    <div class="progress">
+      <b class="progress__bar">
+      <span class="progress__text">
+        Feldolgozás: <em>0%</em>
+      </span>
+      </b>
+    </div>
+    <div class="error-toast">
+      <i class="fas fa-exclamation-circle fa-4x"></i>
+      <span class="text"></span>
+    </div>
+    <div class="notification-toast">
+      <i class="fas fa-check-circle fa-4x"></i>
+      <span class="text"></span>
+    </div>
+  </section>
+
+
+  <!-- Tetelek -->
+  <section id="tetelek">
+
+    <div class="alert alert-primary d-flex align-items-center" role="alert">
+      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+      <div>
+        Az alábbi tételek kiválasztásával adjon hozzá termékeket az árajánlathoz
+      </div>
+    </div>
+
+    <table id="tetelek-table" class="display">
+      <thead>
+          <tr>
+            <th></th>
+            <th>SAP kód</th>
+            <th>Terméknév</th>
+            <th>Kiszerelés (L)</th>
+            <th>Átadási ár (EUR/L)</th>
+            <th>Átadási ár (EUR/kiszerelés)</th>
+            <th>Tájékoztató érték HUF</th>
+          </tr>
+      </thead>
+      <tbody>
+      </tbody>
+  </table>
+</section>
+
+
+<!-- Cégadatok -->
+<section id="cegadatok">
+  
+  <div class="alert alert-primary d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+    <div>
+      Adja meg a megrendelő cég adatait
+    </div>
+  </div>
+
+  <form id="cegadatok-form" class="needs-validation" novalidate>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="ertekesitonev" placeholder="Értékesítő neve">
+      <label for="ertekesitonev">Értékesítő neve</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="vevokod" placeholder="Vevőkód">
+      <label for="vevokod">Vevőkód</label>
+    </div>
+
+    <div class="row g-2 mb-3">
+      <div class="col-md">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="nev" placeholder="Név">
+          <label for="nev">Név</label>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="cegnev" placeholder="Cégnév">
+          <label for="cegnev">Cégnév</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-2 mb-3">
+      <div class="col-md">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="irsz" placeholder="Irányítószám">
+          <label for="irsz">Irányítószám</label>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="varos" placeholder="Város">
+          <label for="varos">Város</label>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="utca" placeholder="Utca">
+          <label for="utca">Utca</label>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="hazsszam" placeholder="Házszám">
+          <label for="hazsszam">Házszám</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-2 mb-3">
+      <div class="col-md">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="email" placeholder="Email">
+          <label for="email">Email</label>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="telefon" placeholder="Telefon">
+          <label for="telefon">Telefon</label>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="fax" placeholder="Fax">
+          <label for="fax">Fax</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="col-auto">
+      <button type="submit" class="btn btn-primary float-right">Tovább &raquo;</button>
+    </div> -->
+  </form>
+  
+</section>
+
+
+<!-- Kedvezmények -->
+<section id="kedvezmenyek">
+
+  <div class="alert alert-primary d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+    <div>
+      Adja meg a kedvezmény mértékét
+    </div>
+  </div>
+
+  <!-- Kedvezmények Táblázat -->
+  <table id="kedvezmenyek-table" class="display">
+    <thead>
+      <tr>
+        <th></th>
+        <th>SAP kód</th>
+        <th>Terméknév</th>
+        <th>Kiszerelés</th>
+        <th>Kedvezmény</th>
+        <th>Átadási ár (EUR/L)</th>
+        <th>Átadási ár (EUR/kiszerelés)</th>
+        <th>Tájékoztató érték HUF</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <!-- Kedvezmények Modal -->
+  <div class="modal fade" id="kedvezmeny-modal" tabindex="-1" aria-labelledby="KedvezmenyModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="KedvezmenyModal">Kedvezmény beállítása</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="needs-validation" novalidate>
+            <div class="form-floating mb-3">
+              <input type="number" class="form-control" id="kedvezmeny-szazalek" placeholder="Kedvezmény százaléka" min="0" max="99">
+              <label for="kedvezmeny-szazalek">Kedvezmény százaléka</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="number" class="form-control" id="kedvezmeny-mertek" placeholder="Kedvezmény mértéke (EUR)" min="0">
+              <label for="kedvezmeny-mertek">Kedvezmény mértéke (EUR)</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="kedvezmeny-cancel" data-bs-dismiss="modal">Mégsem</button>
+          <button type="button" class="btn btn-primary" id="kedvezmeny-save">Mentés</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- További változók -->
+<section id="valtozok">
+
+  <div class="alert alert-primary d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+    <div>
+      További változók megadása
+    </div>
+  </div>
+
+  <form class="needs-validation" novalidate>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="szallitasiforma" placeholder="Szállítási forma">
+      <label for="szallitasiforma">Szállítási forma</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="ervenyesseg" placeholder="Az ajánlat hány napig érvényes?">
+      <label for="ervenyesseg">Az ajánlat hány napig érvényes?</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <div class="col">
+        <label for="szallitasiforma">Tárolást kér?</label>
+      </div>
+      <div class="btn-group" role="group" aria-label="Tárolást kér?">
+        <input type="radio" class="btn-check" name="szallitasiforma" id="szallitasiforma-nem" autocomplete="off" checked>
+        <label class="btn btn-outline-primary" for="szallitasiforma-nem">Nem</label>
+      
+        <input type="radio" class="btn-check" name="szallitasiforma" id="szallitasiforma-igen" autocomplete="off">
+        <label class="btn btn-outline-primary" for="szallitasiforma-igen">Igen</label>
+      </div>
+      
+    </div>
+        
+    
+
+  </form>
+
+</section>
+
+</div>
+
+</body>
+</html>
