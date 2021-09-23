@@ -1967,11 +1967,6 @@
     "exit-on-epipe" "~1.0.1"
     "printj" "~1.1.0"
 
-"adm-zip@^0.4.7":
-  "integrity" "sha512-TFi4HBKSGfIKsK5YCkKaaFG2m4PEDyViZmEwof3MTIgzimHLto6muaHVpbrljdIvIrFZzEq/p4nafOeLcYegrg=="
-  "resolved" "https://registry.npmjs.org/adm-zip/-/adm-zip-0.4.16.tgz"
-  "version" "0.4.16"
-
 "agent-base@6":
   "integrity" "sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ=="
   "resolved" "https://registry.npmjs.org/agent-base/-/agent-base-6.0.2.tgz"
@@ -3214,23 +3209,6 @@
     "whatwg-mimetype" "^2.3.0"
     "whatwg-url" "^8.0.0"
 
-"datatables.net-bs5@^1.10.25", "datatables.net-bs5@>=1.10.25":
-  "integrity" "sha512-SiONLsCrVOuSZm8AcKcMrpo9ZriCdtuf9udzxwK92yrI2a+mnuSi0EreG35Rcq1ORRELqrp3/2o+qcTHo7fSsg=="
-  "resolved" "https://registry.npmjs.org/datatables.net-bs5/-/datatables.net-bs5-1.10.25.tgz"
-  "version" "1.10.25"
-  dependencies:
-    "datatables.net" "^1.10.15"
-    "jquery" ">=1.7"
-
-"datatables.net-buttons-bs5@^2.0.0":
-  "integrity" "sha512-I5Jd3oxS3NMK7ZsbrXVCf/LnD8EVIggtCZVe9c6FDngoigCnWqJVnR9BXR6Mz6bFFZ7nWLSmQHSRSGmhu9nMew=="
-  "resolved" "https://registry.npmjs.org/datatables.net-buttons-bs5/-/datatables.net-buttons-bs5-2.0.0.tgz"
-  "version" "2.0.0"
-  dependencies:
-    "datatables.net-bs5" ">=1.10.25"
-    "datatables.net-buttons" ">=1.7.1"
-    "jquery" ">=1.7"
-
 "datatables.net-buttons-dt@^2.0.0":
   "integrity" "sha512-sc/ERXB+k+dXH2L4uVLsQf2ufUdRy9hiE9uao31r+K8fAkgi/zvrIYhbzMQb4ckZAOsxzWSMyGUfuRnW5yD7+w=="
   "resolved" "https://registry.npmjs.org/datatables.net-buttons-dt/-/datatables.net-buttons-dt-2.0.0.tgz"
@@ -3255,20 +3233,6 @@
   dependencies:
     "datatables.net" "1.10.25"
     "jquery" ">=1.7"
-
-"datatables.net-editor-bs5@^2.0.3":
-  "integrity" "sha512-KpphQa3T8BRUc6EZIZNhGhSRs7eMbTfibmAic8vDgg/JYCeVZj7oT660gY3K6mwgKkbVi8qu3RGegznj3g7xpg=="
-  "resolved" "https://registry.npmjs.org/datatables.net-editor-bs5/-/datatables.net-editor-bs5-2.0.3.tgz"
-  "version" "2.0.3"
-  dependencies:
-    "datatables.net-editor" "^2.0.3"
-
-"datatables.net-editor@^2.0.3":
-  "integrity" "sha512-SX1aoce2sSPRdGvHtev8lNlsSI+bzApUnJWmvipXV8SQc96WfD/z2/GhJ7mKYesREMJuS9tKCwDUnUR2rvBBbA=="
-  "resolved" "https://registry.npmjs.org/datatables.net-editor/-/datatables.net-editor-2.0.4.tgz"
-  "version" "2.0.4"
-  dependencies:
-    "adm-zip" "^0.4.7"
 
 "datatables.net-select-dt@^1.3.3":
   "integrity" "sha512-KHR7dOqnjb9qJopnKxkIQ+JE2YGotBlTBknDeXrGnPAnHd353Ig2Mz9l1GaniWPnxRZ5FnWi25MK02Ys+ZZQTg=="

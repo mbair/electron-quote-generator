@@ -162,22 +162,23 @@ export const processFile = async (filePath, outputPath, browserWindow) => {
   for (let i=0; i < dataRows.length; i++){
     // console.log('datarow', dataRows[i]);
 
-    const percentage = Math.abs(++processedItemsCount / i) * 100;
+    // const percentage = Math.abs(++processedItemsCount / i) * 100;
 
-    browserWindow.webContents.send('main-message', {
-      type: 'progress',
-      data: percentage
-    });
+    // browserWindow.webContents.send('main-message', {
+    //   type: 'progress',
+    //   data: percentage
+    // });
 
     if (dataRows[i][7] == undefined){
       continue;
     } 
 
     // Számok kerekítése 2 tizedesjegyre és tizedes vessző alkalmazása pont helyett
-    dataRows[i][9] = dataRows[i][9].toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ") + ' L';
-    dataRows[i][18] = Number(dataRows[i][18]).toFixed(2).toLocaleString().toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ") + ' EUR/L';
-    dataRows[i][25] = Number(dataRows[i][25]).toFixed(2).toLocaleString().toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ") + ' EUR';
-    dataRows[i][27] = Math.ceil(dataRows[i][27]).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ") + ' HUF';
+    let thousandRegExp = /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g;
+    dataRows[i][9] = dataRows[i][9].toString().replace(thousandRegExp, " ") + ' L';
+    dataRows[i][18] = Number(dataRows[i][18]).toFixed(2).toLocaleString().toString().replace(thousandRegExp, " ") + ' EUR/L';
+    dataRows[i][25] = Number(dataRows[i][25]).toFixed(2).toLocaleString().toString().replace(thousandRegExp, " ") + ' EUR';
+    dataRows[i][27] = Math.ceil(dataRows[i][27]).toString().replace(thousandRegExp, " ") + ' HUF';
 
     arajanlatRows.push([
       dataRows[i][0],  // SAP kód: Kalkuláció A oszlopa

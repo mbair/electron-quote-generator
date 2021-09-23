@@ -1,7 +1,6 @@
 @import '~normalize.css';
 @import "~bootstrap/scss/bootstrap";
 @import '~datatables.net-dt/css/jquery.dataTables.min.css';
-// @import '~datatables.net-bs5/css/dataTables.bootstrap5.min.css';
 @import '~datatables.net-select-dt/css/select.dataTables.min.css';
 @import '~datatables.net-buttons-dt/css/buttons.dataTables.min.css';
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
@@ -150,4 +149,18 @@ table {
 .loader {
   display: none;
   z-index: $zindex-tooltip;
+}
+
+table.dataTable tbody tr.kedvezmeny-sor,
+table.dataTable.hover tbody tr.kedvezmeny-sor:hover, 
+table.dataTable.display tbody tr.kedvezmeny-sor:hover,
+table.dataTable.order-column tbody tr.kedvezmeny-sor>.sorting_1, 
+table.dataTable.order-column tbody tr.kedvezmeny-sor>.sorting_2, 
+table.dataTable.order-column tbody tr.kedvezmeny-sor>.sorting_3, 
+table.dataTable.display tbody tr.kedvezmeny-sor>.sorting_1, 
+table.dataTable.display tbody tr.kedvezmeny-sor>.sorting_2, 
+table.dataTable.display tbody tr.kedvezmeny-sor>.sorting_3 {
+  background-color: #198754;
+  color: white;
+  font-weight: bold;
 }

@@ -1,19 +1,14 @@
 import $ from 'jquery';
 import 'bootstrap';
 import 'datatables.net/js/jquery.dataTables.min.js';
-// import 'datatables.net-bs5';
 import 'datatables.net-select/js/dataTables.select.min.js';
 import 'datatables.net-buttons/js/dataTables.buttons.min.js';
-// import 'datatables.net-buttons/js/buttons.colVis.min.js';
-// import 'datatables.net-buttons/js/buttons.flash.min.js';
 import 'datatables.net-buttons/js/buttons.html5.min.js';
-// import 'datatables.net-buttons/js/buttons.print.min.js';
 import datatables_hu from './utils/datatables.hu.json';
 import { lubexpertLogo, mobil1Logo, arajanlatTemplate } from './utils/arajanlatTemplate';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs; // Fix: Roboto-Regular.ttf not found
-// import 'datatables.net-editor-bs5';
 
 // we also need to process some styles with webpack
 import fontawesome from '@fortawesome/fontawesome';
@@ -154,7 +149,8 @@ const processCompletedHandler = ({ processedItemsCount/*, incompatibleItems, err
 
   $(notificationArea).find('.text').text(
     [
-      `${processedItemsCount} termék sikeresen beolvasva,`,
+      `Termékek sikeresen beolvasva,`
+      //`${processedItemsCount} termék sikeresen beolvasva,`,
       // `${incompatibleItems.length} item(s) skipped,`,
       // `${erroneousItems.length} item(s) erroneous,`,
       // `Log file ${logFilePath} is written on disk.`
@@ -306,13 +302,25 @@ const menuHandler = (target) => {
 
 // Menüpontra kattintás
 window.addEventListener('click', event => {
-  const target = event.target;
+  const target = event.target
 
   // Menü elemre kattintás
   if ($(target).hasClass('nav-link')){
-    menuHandler(target);
+    menuHandler(target)
   }
-});
+})
+
+const discountPrice = (price, percentage, decimals = 0) => {
+  if (!price) return
+
+  // Set Discount price decimals
+  price = (price * ((100 - percentage) / 100)).toFixed(decimals)
+
+  // Thousand separated discount price
+  price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ") 
+  
+  return price
+}
 
 /**
  * Oldal betöltés
@@ -341,6 +349,7 @@ window.addEventListener('click', event => {
     ],
     select: {
       style:    'multi+shift',
+      selector: 'tr:not(.no-select) td',
       /*selector: 'td:first-child'*/
     },
     buttons: [],
@@ -359,7 +368,13 @@ window.addEventListener('click', event => {
         targets: [1, 3, 4, 5, 6, 7],
         className: 'dt-body-right',
       }
-    ], 
+    ],
+    createdRow: function(row, data, dataIndex) {
+      if (data[2] == "Kedvezmény"){
+        $(row).addClass('kedvezmeny-sor').addClass('no-select')
+        $(row).find("td:first").attr('class', '')
+      }
+    },
     buttons: [
       'selectAll',
       'selectNone',
@@ -368,12 +383,13 @@ window.addEventListener('click', event => {
         attr:  {
           title: 'Kedvezmény beállítása',
           id: 'kedvezmeny-beallitasa-button',
+          // class: 'btn btn-primary',
           'data-bs-target': '#kedvezmeny-modal',
           'data-bs-toggle': 'modal',
         },
         action: function ( e, dt, node, config ) {
-          $('#kedvezmeny-szazalek').val('');
-          $('#kedvezmeny-mertek').val('');
+          $('#kedvezmeny-szazalek').val('')
+          $('#kedvezmeny-mertek').val('')
         }
       }, 
       {
@@ -457,8 +473,6 @@ window.addEventListener('click', event => {
           // Értékesítő neve
           arajanlatTemplate[20]['columns'][1]['stack'][0]['text'] = $('#ertekesitonev').val()
 
-          // console.log('arajanlatTemplate', arajanlatTemplate);
-            
           doc.content[1] = arajanlatTemplate;
 
           doc['footer'] = function(currentPage, pageCount) { 
@@ -484,7 +498,6 @@ window.addEventListener('click', event => {
     } 
 
     for (var i=0; i < selectedTetelek.length; i++){
-      // console.log(selectedTetelek[i]);
       kedvezmenyekTable.row.add([
         "",                    // Checkbox
         selectedTetelek[i][1], // SAP kód: Kalkuláció A oszlopa
@@ -503,10 +516,15 @@ window.addEventListener('click', event => {
     tetelekTable.on(event, syncTables)
   });
 
+  /**
+   * Kedvezmények mentése
+   */
   const kedvezmenySave = () => {
-    let szazalek = parseInt($('#kedvezmeny-szazalek').val());
-    let mertek = parseInt($('#kedvezmeny-mertek').val());
+    
+    let szazalek = parseInt($('#kedvezmeny-szazalek').val()) || 0;
+    let mertek = parseInt($('#kedvezmeny-mertek').val()) || 0;
 
+    // Kedvezmény %-ának beállítása
     if (0 <= szazalek && szazalek < 100){
 
       // Ha nincs kijelölt sor, akkor minden sorra alkalmazzuk a %-os kedvezményt
@@ -515,34 +533,56 @@ window.addEventListener('click', event => {
         rows = kedvezmenyekTable.rows({selected: true});
       }
 
+      // Kedvezmény alkalmazása a táblázat soraira
       rows.every(function (rowIdx, tableLoop, rowLoop) {
-          let termek = kedvezmenyekTable.cell(rowIdx, 1).data();
+          
+        let termekNev = kedvezmenyekTable.cell(rowIdx, 1).data()
 
-          // Eredeti ár
-          let eredetiAr;
-          tetelekTable.rows((idx, data, node) => {
-            if (data[1] == termek){
-              eredetiAr = data[3];
-            }
-          })
+        // Sor azonosítása terméknév szerint
+        let row = tetelekTable.rows().data().filter(row => row[1] == termekNev)[0]
+        if (!row) return
 
-          let szazalekMezo = kedvezmenyekTable.cell(rowIdx, 4);
-          szazalekMezo.data(szazalek == 0 ? '' : szazalek+' %');
+        // Eredeti árak
+        let eredetiArak = {
+          literAr: parseFloat(row[4].replace(/ /g, '')),
+          kiszerelesAr: parseFloat(row[5].replace(/ /g, '')),
+          tajekoztatoErtek: parseInt(row[6].replace(/ /g, '')),
+        }
 
-          let bruttoMezo = kedvezmenyekTable.cell(rowIdx, 6);
-          let bruttoAr = eredetiAr.replace(/ /g, '');
-          let deviza = bruttoAr.slice(-3, bruttoAr.length);
-          bruttoAr = parseInt(bruttoAr.slice(0, -3));
-          let kedvezmenyesAr = Math.ceil( bruttoAr * ((100 - szazalek) / 100) );
-          bruttoMezo.data(kedvezmenyesAr+' '+deviza);
-        })
-        .draw();
+        // Kedvezményes árak (2 tizedesjegyre kerekítve)
+        let kedvezmenyesArak = {
+          literAr: discountPrice(eredetiArak.literAr, szazalek, 2),
+          kiszerelesAr: discountPrice(eredetiArak.literAr, szazalek, 2),
+          tajekoztatoErtek: discountPrice(eredetiArak.tajekoztatoErtek, szazalek),
+        }
+
+        // Árak cseréje kedvezményesre
+        kedvezmenyekTable.cell(rowIdx, 4).data(szazalek == 0 ? '' : szazalek+' %')
+        kedvezmenyekTable.cell(rowIdx, 5).data(kedvezmenyesArak.literAr + ' EUR/L')
+        kedvezmenyekTable.cell(rowIdx, 6).data(kedvezmenyesArak.kiszerelesAr + ' EUR')
+        kedvezmenyekTable.cell(rowIdx, 7).data(kedvezmenyesArak.tajekoztatoErtek + ' HUF')
+
+      })
+    
     }
 
-    if (mertek && mertek > 0){
-      kedvezmenyekTable.row.add(["", "", "Kedvezmeny", "", -1 * mertek + ' EUR', "", -1 * mertek + ' EUR', ""]).draw();
+    // Kedvezmény mértékének beállítása
+    if (mertek >= 0){
+      
+      // Korábbi kedvezmény törlése
+      let kedvezmenyekRow = kedvezmenyekTable.rows().data().filter(row => row[2] == "Kedvezmény")[0]
+      if (kedvezmenyekRow) {
+        kedvezmenyekTable.row(':last').remove()
+      } 
+      
+      // Ha a kedvezmény mértéke nem 0, akkor hozzáadjuk a kedvezmény sort
+      if (mertek !== 0){
+        kedvezmenyekTable.row.add(["", "", "Kedvezmény", "", -1 * mertek + ' EUR', "", -1 * mertek + ' EUR', ""])
+      }
+
     }
 
+    kedvezmenyekTable.draw();
     $('#kedvezmeny-cancel').trigger('click');
   }
 
