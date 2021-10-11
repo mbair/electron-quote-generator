@@ -5,7 +5,7 @@ import 'datatables.net-select/js/dataTables.select.min.js';
 import 'datatables.net-buttons/js/dataTables.buttons.min.js';
 import 'datatables.net-buttons/js/buttons.html5.min.js';
 import datatables_hu from './utils/datatables.hu.json';
-import { lubexpertLogo, mobil1Logo, arajanlatTemplate } from './utils/arajanlatTemplate';
+import { lubexpertLogo, mobil1Logo, isoLogo, lablecLogo, arajanlatTemplate } from './utils/arajanlatTemplate';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs; // Fix: Roboto-Regular.ttf not found
@@ -243,9 +243,11 @@ window.addEventListener('message', event => {
       break;
     case 'excel-feldolgozva':
       // console.log('excel-feldolgozva', data);
+      const { arfolyam, arajanlatRows } = data;
+      $('#arfolyam').text(arfolyam + ' HUF/EUR');
+
       tetelekTable.clear();
-      
-      data.arajanlatRows.map((e, i) => {
+      arajanlatRows.map((e, i) => {
         tetelekTable.row.add([
           "",   // Checkbox
           e[0], // SAP kód: Kalkuláció A oszlopa
@@ -433,46 +435,109 @@ const discountPrice = (price, percentage, decimals = 0) => {
           // objLayout['paddingRight'] = function(i) { return 4; };
           // doc.content[0].layout = objLayout;
           // Remove original table created by datatTables
-          doc.content[0] = [];
+          doc.content[0] = []
 
-          // PDF fejléc képek
-          arajanlatTemplate[0]['columns'][0]['image'] = lubexpertLogo;
-          arajanlatTemplate[0]['columns'][2]['image'] = mobil1Logo;
+          arajanlatTemplate = JSON.stringify(arajanlatTemplate)
 
-          // PDF Vevő adatai
-          arajanlatTemplate[2]['table']['body'][1][1]['stack'].push([
-            { text: $('#cegnev').val() || $('#nev').val(), bold: true, fontSize: 16 }, // Vevő neve
-            { text: $('#irsz').val()+' '+$('#varos').val()+' '+$('#utca').val()+' '+$('#hazsszam').val() }, // Vevő címe
-            { text: $('#email').val() },   // Vevő email címe
-            { text: $('#telefon').val() }, // Vevő telefonszáma
-            { text: $('#fax').val() },     // Vevő faxszáma
-          ])
+          // Teszt adatok
+          let tesztAdatok = {
+            
+            // Értékesítő
+            ertekesito_nev: 'Binder Zoltán',
+            ertekesito_osztaly: 'Teszt osztály',
+            ertekesito_email: 'binder.zoltan@lubexpert.hu',
+            ertekesito_kozvetlen_szam: '+36 20/296-9911',
+            ertekesito_fax: '+36 27/343-746',
 
+            // Ügyfél
+            ugyfel_nev: 'Kepecz Norbert',
+            cegnev: 'Partner Autóalkatrész Piac Kft.',
+            irsz: '7630',
+            varos: 'Pécs',
+            utca: 'Mohácsi út 14.',
+            email: 'n.kepecz@partnerauto.hu',
+            telefon: '30/929-4606',
+            fax: '1235678',
+            
+            // Ajánlat
+            szallitasi_forma: 'Kiszállítást kér',
+            ervenyesseg: '30 nap',
+            fizetesi_mod: 'Halasztott utalás',
+            utalas_eddig: '15 nap',
+          }
+
+          for (const [key, value] of Object.entries(tesztAdatok)) {
+            console.log(`${key}: ${value}`)
+            $('#'+key).val(value)
+          }
+
+          // Változók cseréje az árajánlat sablonban
+          let fromTo = {
+
+            // logók
+            // '%lubexpertLogo%': lubexpertLogo,
+            // '%isoLogo%': isoLogo,
+            // '%mobil1Logo%': mobil1Logo,
+            // '%lablecLogo%': lablecLogo,
+
+            // Értékesítő
+            '%ertekesito_nev%': $('#ertekesito_nev').val(),
+            '%ertekesito_osztaly%': $('#ertekesito_osztaly').val(),
+            '%ertekesito_email%': $('#ertekesito_email').val(),
+            '%ertekesito_kozvetlen_szam%': $('#ertekesito_kozvetlen_szam').val(),
+            '%ertekesito_fax%': $('#ertekesito_fax').val(),
+
+            // Ügyfél
+            '%ugyfel_nev%': $('#ugyfel_nev').val(),
+            '%cegnev%': $('#cegnev').val(),
+            '%varos%': $('#varos').val(),
+            '%utca%': $('#utca').val(),
+            '%irsz%': $('#irsz').val(),
+            '%email%': $('#email').val(),
+            '%telefon%': $('#telefon').val(),
+            '%fax%': $('#fax').val(),
+
+            // Ajánlat
+            '%szallitasi_forma%': $('#szallitasi_forma').val(),
+            '%evernyesseg%': $('#ervenyesseg').val(),
+            '%fizetesi_mod%': $('#fizetesi_mod').val(),
+            '%utalas_eddig%': $('#utalas_eddig').val(),
+            '%arfolyam%': parseInt($('#arfolyam').text()),
+            '%datum%': '2021.10.11',
+            '%oldalak_szama%': '1',
+          }
+
+          for (const [key, value] of Object.entries(fromTo)) {
+            console.log(`${key}: ${value}`)
+            let re = new RegExp(key, "g")
+            arajanlatTemplate = arajanlatTemplate.replace(re, value)
+          }
+
+          // PDF logók
+          arajanlatTemplate = arajanlatTemplate.replace('%lubexpertLogo%', lubexpertLogo);
+          arajanlatTemplate = arajanlatTemplate.replace('%isoLogo%', isoLogo);
+          arajanlatTemplate = arajanlatTemplate.replace('%mobil1Logo%', mobil1Logo);
+          arajanlatTemplate = arajanlatTemplate.replace('%lablecLogo%', lablecLogo);
+
+          arajanlatTemplate = JSON.parse(arajanlatTemplate);
+
+          console.log('arajanlatTemplate', arajanlatTemplate)
 
           // PDF Táblázat feltöltése a kedvezmény táblázat soraival
-          let pdfTermekek = [arajanlatTemplate[5]['table']['body'][0]];
+          let pdfTermekek = [arajanlatTemplate[7]['table']['body'][0]];
           kedvezmenyekTable.data().map(row => {
             pdfTermekek.push([
               { text: row[1], alignment: 'right' }, // SAP kód
               { text: row[2], alignment: 'left'  }, // Terméknév
-              { text: row[3], alignment: 'right' }, // Kiszerelés (Liter)
-              { text: row[5], alignment: 'right' }, // Átadási ár (EUR/L)
-              { text: row[6], alignment: 'right' }, // Átadási ár (EUR/kiszer.)
-              { text: row[7], alignment: 'right' }, // Tájékoztató érték (HUF)
+              { text: row[3], alignment: 'right' }, // Kiszerelés (L, Kg)
+              { text: row[5], alignment: 'right' }, // Termék nettó átadási ára (EUR/L, Kg)
+              { text: row[6], alignment: 'right' }, // Nettó átadási ár (EUR/kiszerelés)
+              { text: row[7], alignment: 'right' }, // Tájékoztató nettó ár (HUF/kiszerelés)
             ])
           })
           
-          arajanlatTemplate[5]['table']['body'] = pdfTermekek;
-
-          // Árajánlat érvényessége
-          let ervenyesseg = $('#ervenyesseg').val();
-          if (ervenyesseg){
-            arajanlatTemplate[6]['text'] = arajanlatTemplate[6]['text'].replace('30 nap vagy megállapodásban rögzített időpont', ervenyesseg + ' nap');
-          }
-
-          // Értékesítő neve
-          arajanlatTemplate[20]['columns'][1]['stack'][0]['text'] = $('#ertekesitonev').val()
-
+          arajanlatTemplate[7]['table']['body'] = pdfTermekek;
+          
           doc.content[1] = arajanlatTemplate;
 
           doc['footer'] = function(currentPage, pageCount) { 
@@ -506,7 +571,7 @@ const discountPrice = (price, percentage, decimals = 0) => {
         "",                    // Kedvezmény
         selectedTetelek[i][4], // Átadási ár: Kalkuláció S oszlopa
         selectedTetelek[i][5], // Átadási ár EUR/kiszerelés: kiszerelés és a EUR/l szorzata
-        selectedTetelek[i][6], // Tájékoztató érték HUF
+        selectedTetelek[i][6], // Tájékoztató nettó ár HUF
       ]).draw();
     }
   }
@@ -558,9 +623,9 @@ const discountPrice = (price, percentage, decimals = 0) => {
 
         // Árak cseréje kedvezményesre
         kedvezmenyekTable.cell(rowIdx, 4).data(szazalek == 0 ? '' : szazalek+' %')
-        kedvezmenyekTable.cell(rowIdx, 5).data(kedvezmenyesArak.literAr + ' EUR/L')
-        kedvezmenyekTable.cell(rowIdx, 6).data(kedvezmenyesArak.kiszerelesAr + ' EUR')
-        kedvezmenyekTable.cell(rowIdx, 7).data(kedvezmenyesArak.tajekoztatoErtek + ' HUF')
+        kedvezmenyekTable.cell(rowIdx, 5).data(kedvezmenyesArak.literAr)
+        kedvezmenyekTable.cell(rowIdx, 6).data(kedvezmenyesArak.kiszerelesAr)
+        kedvezmenyekTable.cell(rowIdx, 7).data(kedvezmenyesArak.tajekoztatoErtek)
 
       })
     
@@ -598,6 +663,22 @@ const discountPrice = (price, percentage, decimals = 0) => {
   //     }
   //   }
   // });
+
+
+  // Fizetési mód függvényében jelenítjük meg az "utalas_eddig" mezőt
+  $('#fizetesi_mod').on('change', function(){
+    
+    let utalas_eddig = $('#utalas_eddig').parent().parent()
+    
+    if (this.value == 'Halasztott utalás'){
+      utalas_eddig.removeClass('d-none')
+                  .addClass('d-block')
+    } else {
+      utalas_eddig.removeClass('d-block')
+                  .addClass('d-none')
+    }
+  })
+  
 
   // Example starter JavaScript for disabling form submissions if there are invalid fields
   // Fetch all the forms we want to apply custom Bootstrap validation styles to

@@ -141,6 +141,9 @@ export const processFile = async (filePath, outputPath, browserWindow) => {
   // kalkulacioMunkafuzet = kalkulacioMunkafuzet.splice(0,12);
   // console.log('--------------- kalkulacioMunkafuzet ---------------', kalkulacioMunkafuzet);
 
+  // Árfolyam meghatározása az Excel alapján
+  let arfolyam = kalkulacioMunkafuzet[6][10];
+
   // Levágjuk az első 11 felesleges sort
   delete kalkulacioMunkafuzet[0];
   delete kalkulacioMunkafuzet[1];
@@ -175,10 +178,10 @@ export const processFile = async (filePath, outputPath, browserWindow) => {
 
     // Számok kerekítése 2 tizedesjegyre és tizedes vessző alkalmazása pont helyett
     let thousandRegExp = /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g;
-    dataRows[i][9] = dataRows[i][9].toString().replace(thousandRegExp, " ") + ' L';
-    dataRows[i][18] = Number(dataRows[i][18]).toFixed(2).toLocaleString().toString().replace(thousandRegExp, " ") + ' EUR/L';
-    dataRows[i][25] = Number(dataRows[i][25]).toFixed(2).toLocaleString().toString().replace(thousandRegExp, " ") + ' EUR';
-    dataRows[i][27] = Math.ceil(dataRows[i][27]).toString().replace(thousandRegExp, " ") + ' HUF';
+    dataRows[i][9] = dataRows[i][9].toString().replace(thousandRegExp, " ");
+    dataRows[i][18] = Number(dataRows[i][18]).toFixed(2).toLocaleString().toString().replace(thousandRegExp, " ");
+    dataRows[i][25] = Number(dataRows[i][25]).toFixed(2).toLocaleString().toString().replace(thousandRegExp, " ");
+    dataRows[i][27] = Math.ceil(dataRows[i][27]).toString().replace(thousandRegExp, " ");
 
     arajanlatRows.push([
       dataRows[i][0],  // SAP kód: Kalkuláció A oszlopa
@@ -186,7 +189,7 @@ export const processFile = async (filePath, outputPath, browserWindow) => {
       dataRows[i][9],  // Kiszerelés: Kalkuláció J oszlopa
       dataRows[i][18], // Átadási ár: Kalkuláció S oszlopa
       dataRows[i][25], // Átadási ár EUR/kiszerelés: kiszerelés és a EUR/l szorzata
-      dataRows[i][27], // Tájékoztató érték HUF
+      dataRows[i][27], // Tájékoztató nettó ár HUF
     ])
   }
 
@@ -205,6 +208,7 @@ export const processFile = async (filePath, outputPath, browserWindow) => {
   browserWindow.webContents.send('main-message', {
     type: 'excel-feldolgozva',
     data: {
+      arfolyam,
       arajanlatRows
     }
   });

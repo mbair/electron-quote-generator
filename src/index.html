@@ -53,10 +53,7 @@
           <a class="nav-link" href="#tetelek">Tételek kiválasztása</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#cegadatok">Cég adatai</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#valtozok">További változók</a>
+          <a class="nav-link" href="#ugyfeladatok">Ügyfél adatai</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#kedvezmenyek">Kedvezmények</a>
@@ -81,10 +78,10 @@
         <div class="cont">
           <i class="fas fa-cloud-upload-alt fa-5x"></i>
           <div class="tit">
-            Húzza ide
+            Húzza ide 
           </div>
           <div class="desc">
-            az Excel fájlt, vagy
+            az aktuális árkalkulátor Excel fájlt, vagy
           </div>
           <div class="browse">
             kattintson ide a tallózáshoz
@@ -125,12 +122,12 @@
       <thead>
           <tr>
             <th></th>
-            <th>SAP kód</th>
+            <th>Kód</th>
             <th>Terméknév</th>
-            <th>Kiszerelés (L)</th>
-            <th>Átadási ár (EUR/L)</th>
-            <th>Átadási ár (EUR/kiszerelés)</th>
-            <th>Tájékoztató érték HUF</th>
+            <th>Kiszerelés<br>L, Kg</th>
+            <th>Termék nettó átadási ára<br>EUR/L, Kg</th>
+            <th>Nettó átadási ár<br>EUR/kiszerelés</th>
+            <th>Tájékoztató nettó ár<br>HUF/kiszerelés</th>
           </tr>
       </thead>
       <tbody>
@@ -139,8 +136,8 @@
 </section>
 
 
-<!-- Cégadatok -->
-<section id="cegadatok">
+<!-- Ügyfél adatai -->
+<section id="ugyfeladatok">
   
   <div class="alert alert-primary d-flex align-items-center" role="alert">
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
@@ -149,80 +146,156 @@
     </div>
   </div>
 
-  <form id="cegadatok-form" class="needs-validation" novalidate>
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="ertekesitonev" placeholder="Értékesítő neve">
-      <label for="ertekesitonev">Értékesítő neve</label>
-    </div>
+  <form id="ugyfeladatok-form" class="needs-validation" novalidate>
+    <fieldset class="border p-2 mb-3">
+      <legend class="w-auto">Értékesítő</legend>
+      <div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="ertekesito_nev" placeholder="Értékesítő neve">
+            <label for="ertekesito_nev">Értékesítő neve</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="ertekesito_osztaly" placeholder="Értékesítő osztály">
+            <label for="ertekesito_osztaly">Értékesítő osztály</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="ertekesito_email" placeholder="Értékesítő email">
+            <label for="ertekesito_email">Értékesítő email</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="ertekesito_kozvetlen_szam" placeholder="Közvetlen szám">
+            <label for="ertekesito_kozvetlen_szam">Közvetlen szám</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="ertekesito_fax" placeholder="Fax szám">
+            <label for="ertekesito_fax">Fax szám</label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
 
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="vevokod" placeholder="Vevőkód">
-      <label for="vevokod">Vevőkód</label>
-    </div>
+    <fieldset class="border p-2 mb-3">
+      <legend class="w-auto">Ügyfél</legend>
+      <div class="row g-2 mb-3">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="ugyfel_nev" placeholder="Ügyfél neve">
+            <label for="ugyfel_nev">Ügyfél neve</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="cegnev" placeholder="Cégnév">
+            <label for="cegnev">Cégnév</label>
+          </div>
+        </div>
+      </div>
 
-    <div class="row g-2 mb-3">
-      <div class="col-md">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="nev" placeholder="Név">
-          <label for="nev">Név</label>
+      <div class="row g-2 mb-3">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="irsz" placeholder="Irányítószám">
+            <label for="irsz">Irányítószám</label>
+          </div>
         </div>
-      </div>
-      <div class="col-md">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="cegnev" placeholder="Cégnév">
-          <label for="cegnev">Cégnév</label>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="varos" placeholder="Város">
+            <label for="varos">Város</label>
+          </div>
         </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="utca" placeholder="Utca">
+            <label for="utca">Utca</label>
+          </div>
+        </div>
+        <!-- <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="hazsszam" placeholder="Házszám">
+            <label for="hazsszam">Házszám</label>
+          </div>
+        </div> -->
       </div>
-    </div>
 
-    <div class="row g-2 mb-3">
-      <div class="col-md">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="irsz" placeholder="Irányítószám">
-          <label for="irsz">Irányítószám</label>
+      <div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="email" placeholder="Email">
+            <label for="email">Email</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="telefon" placeholder="Telefon">
+            <label for="telefon">Telefon</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="fax" placeholder="Fax">
+            <label for="fax">Fax</label>
+          </div>
         </div>
       </div>
-      <div class="col-md">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="varos" placeholder="Város">
-          <label for="varos">Város</label>
-        </div>
-      </div>
-      <div class="col-md">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="utca" placeholder="Utca">
-          <label for="utca">Utca</label>
-        </div>
-      </div>
-      <div class="col-md">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="hazsszam" placeholder="Házszám">
-          <label for="hazsszam">Házszám</label>
-        </div>
-      </div>
-    </div>
+    </fieldset>
 
-    <div class="row g-2 mb-3">
-      <div class="col-md">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="email" placeholder="Email">
-          <label for="email">Email</label>
+    <fieldset class="border p-2 mb-3">
+      <legend class="w-auto">Ajánlat</legend>
+      <div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <select id="szallitasi_forma" class="form-select" aria-label="Szállítási forma">
+              <option value="Kiszállítást kér" selected>Kiszállítást kér</option>
+              <option value="Érte jön">Érte jön</option>
+            </select>
+            <label for="szallitasi_forma">Szállítási forma</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <select id="ervenyesseg" class="form-select" aria-label="Ajánlat érvényesség">
+              <option value="15 nap" selected>15 nap</option>
+              <option value="30 nap">30 nap</option>
+              <option value="45 nap">45 nap</option>
+              <option value="60 nap">60 nap</option>
+            </select>
+            <label for="ervenyesseg">Ajánlat érvényesség</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <select id="fizetesi_mod" class="form-select" aria-label="Fizetési mód">
+              <option value="Előre utalás" selected>Előre utalás</option>
+              <option value="Halasztott utalás">Halasztott utalás</option>
+            </select>
+            <label for="fizetesi_mod">Fizetési mód</label>
+          </div>
+        </div>
+        <div class="col-md d-none"><!-- Csak "Halasztott utalás" esetén látható -->
+          <div class="form-floating">
+            <select id="utalas_eddig" class="form-select" aria-label="Utalás eddig">
+              <option value="8 nap" selected>8 nap</option>
+              <option value="15 nap">15 nap</option>
+              <option value="30 nap">30 nap</option>
+              <option value="45 nap">45 nap</option>
+              <option value="60 nap">60 nap</option>
+            </select>
+            <label for="utalas_eddig">Utalás eddig</label>
+          </div>
         </div>
       </div>
-      <div class="col-md">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="telefon" placeholder="Telefon">
-          <label for="telefon">Telefon</label>
-        </div>
-      </div>
-      <div class="col-md">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="fax" placeholder="Fax">
-          <label for="fax">Fax</label>
-        </div>
-      </div>
-    </div>
-
+    </fieldset>
+      
     <!-- <div class="col-auto">
       <button type="submit" class="btn btn-primary float-right">Tovább &raquo;</button>
     </div> -->
@@ -237,7 +310,10 @@
   <div class="alert alert-primary d-flex align-items-center" role="alert">
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
     <div>
-      Adja meg a kedvezmény mértékét
+      <div class="row">
+        <div class="col-auto me-auto">Tájékoztató árfolyam: <span id="arfolyam" class="badge rounded-pill bg-primary">360 HUF/EUR</span></div>
+      </div>
+      
     </div>
   </div>
 
@@ -246,13 +322,13 @@
     <thead>
       <tr>
         <th></th>
-        <th>SAP kód</th>
+        <th>Kód</th>
         <th>Terméknév</th>
-        <th>Kiszerelés</th>
+        <th>Kiszerelés<br>L, Kg</th>
         <th>Kedvezmény</th>
-        <th>Átadási ár (EUR/L)</th>
-        <th>Átadási ár (EUR/kiszerelés)</th>
-        <th>Tájékoztató érték HUF</th>
+        <th>Termék nettó átadási ára<br>EUR/L, Kg</th>
+        <th>Nettó átadási ár<br>EUR/kiszerelés</th>
+        <th>Tájékoztató nettó ár<br>HUF/kiszerelés</th>
       </tr>
     </thead>
     <tbody>
@@ -288,49 +364,8 @@
   </div>
 </section>
 
-
-<!-- További változók -->
-<section id="valtozok">
-
-  <div class="alert alert-primary d-flex align-items-center" role="alert">
-    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
-    <div>
-      További változók megadása
-    </div>
-  </div>
-
-  <form class="needs-validation" novalidate>
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="szallitasiforma" placeholder="Szállítási forma">
-      <label for="szallitasiforma">Szállítási forma</label>
-    </div>
-
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="ervenyesseg" placeholder="Az ajánlat hány napig érvényes?">
-      <label for="ervenyesseg">Az ajánlat hány napig érvényes?</label>
-    </div>
-
-    <div class="form-floating mb-3">
-      <div class="col">
-        <label for="szallitasiforma">Tárolást kér?</label>
-      </div>
-      <div class="btn-group" role="group" aria-label="Tárolást kér?">
-        <input type="radio" class="btn-check" name="szallitasiforma" id="szallitasiforma-nem" autocomplete="off" checked>
-        <label class="btn btn-outline-primary" for="szallitasiforma-nem">Nem</label>
-      
-        <input type="radio" class="btn-check" name="szallitasiforma" id="szallitasiforma-igen" autocomplete="off">
-        <label class="btn btn-outline-primary" for="szallitasiforma-igen">Igen</label>
-      </div>
-      
-    </div>
-        
-    
-
-  </form>
-
-</section>
-
 </div>
+<!-- /Tartalom -->
 
 </body>
 </html>

@@ -58,9 +58,8 @@ header {
   height: calc(100% - 170px);
 }
 #tetelek {display: none}
-#cegadatok {display: none}
+#ugyfeladatok {display: none}
 #kedvezmenyek {display: none}
-#valtozok {display: none}
 
 section {
   padding: 20px;
@@ -151,6 +150,9 @@ table {
   z-index: $zindex-tooltip;
 }
 
+table.dataTable thead {
+  text-align: center;
+}
 table.dataTable tbody tr.kedvezmeny-sor,
 table.dataTable.hover tbody tr.kedvezmeny-sor:hover, 
 table.dataTable.display tbody tr.kedvezmeny-sor:hover,
@@ -164,3 +166,22 @@ table.dataTable.display tbody tr.kedvezmeny-sor>.sorting_3 {
   color: white;
   font-weight: bold;
 }
+
+legend { 
+  float: none; 
+  padding: inherit; 
+}
+
+#ugyfeladatok-form {
+  fieldset {
+    background-color: var(--bs-gray-100);
+  }
+
+  legend {
+    margin-bottom: 0;
+  }
+
+  .row:first-child > * {
+    margin-top: 0 !important;
+  }
+} 
