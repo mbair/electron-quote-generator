@@ -153,6 +153,9 @@ table {
 table.dataTable thead {
   text-align: center;
 }
+.filters th {
+    padding: 10px 10px;
+  }
 table.dataTable tbody tr.kedvezmeny-sor,
 table.dataTable.hover tbody tr.kedvezmeny-sor:hover, 
 table.dataTable.display tbody tr.kedvezmeny-sor:hover,

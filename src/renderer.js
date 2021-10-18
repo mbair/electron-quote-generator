@@ -331,6 +331,12 @@ const discountPrice = (price, percentage, decimals = 0) => {
 (function () {
   'use strict'
 
+  // Setup - add a text input to each header cell
+  $('#tetelek-table thead tr')
+    .clone(true)
+    .addClass('filters')
+    .appendTo('#tetelek-table thead');
+
   var selectedTetelek;
   var tetelekTableConfig = {
     dom: 'Bfrtip',
@@ -355,7 +361,53 @@ const discountPrice = (price, percentage, decimals = 0) => {
       /*selector: 'td:first-child'*/
     },
     buttons: [],
-  }
+    orderCellsTop: true,
+    fixedHeader: true,
+    initComplete: function () {
+
+      let api = this.api();
+
+      // For each column
+      api.columns()
+          .eq(0)
+          .each(function (colIdx) {
+
+              // Set the header cell to contain the input element
+              let cell = $('.filters th').eq(
+                  $(api.column(colIdx).header()).index()
+              );
+              
+              let title = $(cell).text();
+              if (!title) return;
+              title = cell.html().split('<br>')[0];
+
+              let cellWidth = 2 * Math.ceil($(cell).width());
+              console.log('cellWidth', cellWidth);
+
+              $(cell).html('<input type="text" placeholder="'+title+'" style="width: '+cellWidth+'px"/>');
+
+              // On every keypress in this input
+              $('input', $('.filters th').eq($(api.column(colIdx).header()).index()))
+                  .off('keyup change clear')
+                  .on('keyup change clear', function(e) {
+                      e.stopPropagation();
+
+                      // Get the search value
+                      $(this).attr('title', $(this).val());
+
+                      let cursorPosition = this.selectionStart;
+                      
+                      // Search the column for that value
+                      api.column(colIdx)
+                          .search(this.value)
+                          .draw();
+
+                      $(this).focus()[0]
+                              .setSelectionRange(cursorPosition, cursorPosition);
+                  });
+          });
+      }
+    }
 
   tetelekTable = $('#tetelek-table').DataTable(tetelekTableConfig)
 
@@ -521,7 +573,7 @@ const discountPrice = (price, percentage, decimals = 0) => {
 
           arajanlatTemplate = JSON.parse(arajanlatTemplate);
 
-          console.log('arajanlatTemplate', arajanlatTemplate)
+          // console.log('arajanlatTemplate', arajanlatTemplate)
 
           // PDF Táblázat feltöltése a kedvezmény táblázat soraival
           let pdfTermekek = [arajanlatTemplate[7]['table']['body'][0]];
