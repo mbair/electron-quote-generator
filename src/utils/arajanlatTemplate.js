@@ -14,14 +14,14 @@ var arajanlatTemplate = [
             },
             {
                 alignment: 'left',
-                image: '%isoLogo%',
+                image: isoLogo,
                 width: 90,
                 margin: [20,20],
             },
             {},
             {
                 alignment: 'right',
-                image: '%mobil1Logo%',
+                image: mobil1Logo,
                 width: 80,
                 margin: [0,20],
             }
@@ -43,7 +43,7 @@ var arajanlatTemplate = [
         ]
     },
     {
-        text: '2120 Dunakeszi, Pallag u.43.                   Telefon:  +36 27/343-745'
+        text: '2120 Dunakeszi, Pallag u.43.                   Telefon: +36 27/343-745'
     },
     {
         margin: [0,10,0,0],
@@ -207,7 +207,7 @@ var arajanlatTemplate = [
         text: 'Megrendelését fax/e-mail útján kérjük elküldeni a Lubexpert Hungária Kft. irodájába.'
     },
     {
-        text: 'fax:      +36 27/343-746                     e-mail:         rendeles@lubexpert.hu'
+        text: 'fax: +36 27/343-746                     e-mail: rendeles@lubexpert.hu'
     },
     {
         text: '3. Szállítás:',
@@ -215,7 +215,7 @@ var arajanlatTemplate = [
         margin: [0,10,0,0],
     },
     {
-        text: 'Szállítási határidő: 3-4 hét\n A szállítás díjmentes.'
+        text: '%szallitas_text%'
     },
     {
         text: '4. Fizetési feltételek:',
@@ -223,10 +223,10 @@ var arajanlatTemplate = [
         margin: [0,10,0,0],
     },
     {
-        text: 'A fizetési határidő, a megrendelés alapján kiállított számla szerint: %hatarido% nap'
+        text: 'A fizetési határidő, a megrendelés alapján kiállított számla szerint: %hatarido%'
     },
     {
-        text: 'A fizetés módja:      átutalás'
+        text: 'A fizetés módja: %fizetesi_mod%'
     },
     {
         text: '5. Szolgáltatások:',
@@ -264,7 +264,7 @@ var arajanlatTemplate = [
     },
     {
         alignment: 'center',
-        image: '%lablecLogo%',
+        image: lablecLogo,
         width: 300,
         margin: [0,40],
     }

@@ -1,6 +1,6 @@
 {
-  "name": "lubexpert-arajanlat-app",
-  "productName": "Lubexpert Árajánlat App",
+  "name": "lubexpert-arajanlat-keszito",
+  "productName": "Lubexpert Árajánlat Készítő",
   "version": "1.5.0",
   "description": "Excel fájlban vezetett termék katalógusból történő PDF formátumú árajánlat előállítását teszi lehetővé különböző kedvezmények megadásával",
   "main": "./dist/index.bundle.js",
@@ -109,8 +109,8 @@
     "popper.js": "^1.16.1"
   },
   "build": {
-    "appId": "com.gabris.LubexpertArajanlatApp",
-    "productName": "Lubexpert Árajánlat App",
+    "appId": "com.gabris.LubexpertArajanlatKeszito",
+    "productName": "Lubexpert Árajánlat Készítő",
     "copyright": "Copyright © 2021 Balázs Gábris",
     "files": [
       "!build-assets${/*}",

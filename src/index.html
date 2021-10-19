@@ -28,10 +28,10 @@
     <div class="container">
       <div class="d-flex align-items-center">
         <div class="flex-shrink-0">
-          <img src="images/lubexpert-logo-150px.png" width="150" height="77" alt="Lubexpert Árajánlat App">
+          <img src="images/lubexpert-logo-150px.png" width="150" height="77" alt="Lubexpert Árajánlat Készítő">
         </div>
         <div class="flex-grow-1 text-center text-uppercase">
-          <h1>Árajánlat App</h1>
+          <h1>Lubexpert árajánlat készítő</h1>
         </div>
       </div>
     </div>
@@ -346,12 +346,23 @@
         <div class="modal-body">
           <form class="needs-validation" novalidate>
             <div class="form-floating mb-3">
-              <input type="number" class="form-control" id="kedvezmeny-szazalek" placeholder="Kedvezmény százaléka" min="0" max="99">
+              <select id="kedvezmeny-szazalek" class="form-select" aria-label="Kedvezmény százaléka">
+                <option value="0%" selected>0%</option>
+                <option value="5%">5%</option>
+                <option value="10%">10%</option>
+                <option value="15%">15%</option>
+                <option value="20%">20%</option>
+                <option value="25%">25%</option>
+                <option value="30%">30%</option>
+              </select>
               <label for="kedvezmeny-szazalek">Kedvezmény százaléka</label>
             </div>
-            <div class="form-floating mb-3">
-              <input type="number" class="form-control" id="kedvezmeny-mertek" placeholder="Kedvezmény mértéke (EUR)" min="0">
-              <label for="kedvezmeny-mertek">Kedvezmény mértéke (EUR)</label>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="raklapos-tetel">
+              <label class="form-check-label" for="raklapos-tetel">
+                Raklapos tétel
+              </label>
             </div>
           </form>
         </div>

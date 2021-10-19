@@ -382,9 +382,10 @@ const discountPrice = (price, percentage, decimals = 0) => {
               title = cell.html().split('<br>')[0];
 
               let cellWidth = 2 * Math.ceil($(cell).width());
-              console.log('cellWidth', cellWidth);
+              cellWidth = '100%';
+              // console.log('cellWidth', cellWidth);
 
-              $(cell).html('<input type="text" placeholder="'+title+'" style="width: '+cellWidth+'px"/>');
+              $(cell).html('<input type="text" placeholder="'+title+'"/>');
 
               // On every keypress in this input
               $('input', $('.filters th').eq($(api.column(colIdx).header()).index()))
@@ -438,12 +439,19 @@ const discountPrice = (price, percentage, decimals = 0) => {
           title: 'Kedvezmény beállítása',
           id: 'kedvezmeny-beallitasa-button',
           // class: 'btn btn-primary',
-          'data-bs-target': '#kedvezmeny-modal',
-          'data-bs-toggle': 'modal',
+          'data-bs-target': '#kedvezmeny-modal', // Open modal
+          'data-bs-toggle': 'modal', // Open modal
         },
         action: function ( e, dt, node, config ) {
-          $('#kedvezmeny-szazalek').val('')
-          $('#kedvezmeny-mertek').val('')
+          let rows = kedvezmenyekTable.rows({selected: true}).data()
+          let maxSzazalek = Math.max.apply(Math, rows.map(i => parseInt(i[4])))
+          
+          if (maxSzazalek){
+            $('#kedvezmeny-szazalek option[value="'+maxSzazalek+'%"]').prop('selected', true)
+          } else {
+            $('#kedvezmeny-szazalek option[value="0%"]').prop('selected', true)
+          }
+          // $('#kedvezmeny-mertek').val('')
         }
       }, 
       {
@@ -464,7 +472,7 @@ const discountPrice = (price, percentage, decimals = 0) => {
           //Create a date string that we use in the footer. Format is dd-mm-yyyy
           // var now = new Date();
           // var today = now.getFullYear()+'.'+(now.getMonth()+1)+'.'+now.getDate();
-          var today = new Date().toLocaleDateString('hu-HU')
+          let today = new Date().toLocaleDateString('hu-HU')
           // A documentation reference can be found at
           // https://github.com/bpampuch/pdfmake#getting-started
           // Set page margins [left,top,right,bottom] or [horizontal,vertical]
@@ -489,7 +497,11 @@ const discountPrice = (price, percentage, decimals = 0) => {
           // Remove original table created by datatTables
           doc.content[0] = []
 
-          arajanlatTemplate = JSON.stringify(arajanlatTemplate)
+          doc['footer'] = function(currentPage, pageCount) { 
+            return { text: today, alignment: 'center' }
+          }
+
+          let template = JSON.stringify(arajanlatTemplate)
 
           // Teszt adatok
           let tesztAdatok = {
@@ -518,19 +530,18 @@ const discountPrice = (price, percentage, decimals = 0) => {
             utalas_eddig: '15 nap',
           }
 
-          for (const [key, value] of Object.entries(tesztAdatok)) {
-            console.log(`${key}: ${value}`)
-            $('#'+key).val(value)
-          }
+          // for (const [key, value] of Object.entries(tesztAdatok)) {
+          //   $('#'+key).val(value)
+          // }
 
           // Változók cseréje az árajánlat sablonban
           let fromTo = {
 
-            // logók
-            // '%lubexpertLogo%': lubexpertLogo,
-            // '%isoLogo%': isoLogo,
-            // '%mobil1Logo%': mobil1Logo,
-            // '%lablecLogo%': lablecLogo,
+            // PDF logók
+            '%lubexpertLogo%': lubexpertLogo,
+            '%isoLogo%': isoLogo,
+            '%mobil1Logo%': mobil1Logo,
+            '%lablecLogo%': lablecLogo,
 
             // Értékesítő
             '%ertekesito_nev%': $('#ertekesito_nev').val(),
@@ -550,33 +561,25 @@ const discountPrice = (price, percentage, decimals = 0) => {
             '%fax%': $('#fax').val(),
 
             // Ajánlat
-            '%szallitasi_forma%': $('#szallitasi_forma').val(),
+            '%szallitas_text%': $('#szallitasi_forma').val() == 'Érte jön' ? 'Érte jön. Nem kér szállítást.' : 'Szállítási határidő: 3-4 hét. A szállítás díjmentes.',
             '%evernyesseg%': $('#ervenyesseg').val(),
             '%fizetesi_mod%': $('#fizetesi_mod').val(),
-            '%utalas_eddig%': $('#utalas_eddig').val(),
+            '%hatarido%': $('#fizetesi_mod').val() == 'Előre utalás' ? '0 nap' : $('#utalas_eddig').val(),
             '%arfolyam%': parseInt($('#arfolyam').text()),
-            '%datum%': '2021.10.11',
-            '%oldalak_szama%': '1',
+            '%datum%': today,
+            '%oldalak_szama%': doc['footer'].length,
           }
 
           for (const [key, value] of Object.entries(fromTo)) {
-            console.log(`${key}: ${value}`)
+            // console.log(`${key}: ${value}`)
             let re = new RegExp(key, "g")
-            arajanlatTemplate = arajanlatTemplate.replace(re, value)
+            template = template.replace(re, value)
           }
 
-          // PDF logók
-          arajanlatTemplate = arajanlatTemplate.replace('%lubexpertLogo%', lubexpertLogo);
-          arajanlatTemplate = arajanlatTemplate.replace('%isoLogo%', isoLogo);
-          arajanlatTemplate = arajanlatTemplate.replace('%mobil1Logo%', mobil1Logo);
-          arajanlatTemplate = arajanlatTemplate.replace('%lablecLogo%', lablecLogo);
-
-          arajanlatTemplate = JSON.parse(arajanlatTemplate);
-
-          // console.log('arajanlatTemplate', arajanlatTemplate)
+          template = JSON.parse(template);
 
           // PDF Táblázat feltöltése a kedvezmény táblázat soraival
-          let pdfTermekek = [arajanlatTemplate[7]['table']['body'][0]];
+          let pdfTermekek = [template[7]['table']['body'][0]]
           kedvezmenyekTable.data().map(row => {
             pdfTermekek.push([
               { text: row[1], alignment: 'right' }, // SAP kód
@@ -588,13 +591,9 @@ const discountPrice = (price, percentage, decimals = 0) => {
             ])
           })
           
-          arajanlatTemplate[7]['table']['body'] = pdfTermekek;
+          template[7]['table']['body'] = pdfTermekek
           
-          doc.content[1] = arajanlatTemplate;
-
-          doc['footer'] = function(currentPage, pageCount) { 
-            return { text: today, alignment: 'center' }
-          }
+          doc.content[1] = template
         }
       }] 
   })
@@ -639,21 +638,23 @@ const discountPrice = (price, percentage, decimals = 0) => {
   const kedvezmenySave = () => {
     
     let szazalek = parseInt($('#kedvezmeny-szazalek').val()) || 0;
-    let mertek = parseInt($('#kedvezmeny-mertek').val()) || 0;
+    let raklapos = $('#raklapos-tetel').is(':checked');
+    let erteJon = $('#szallitasi_forma').val() == 'Érte jön';
+    let arfolyam = parseInt($('#arfolyam').text());
+    let thousandRegExp = /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g;
+    // let mertek = parseInt($('#kedvezmeny-mertek').val()) || 0;
 
     // Kedvezmény %-ának beállítása
-    if (0 <= szazalek && szazalek < 100){
+    if (0 <= szazalek && szazalek <= 30) {
 
-      // Ha nincs kijelölt sor, akkor minden sorra alkalmazzuk a %-os kedvezményt
-      let rows = kedvezmenyekTable.rows();
-      if (kedvezmenyekTable.rows({selected: true}).count() > 0){
-        rows = kedvezmenyekTable.rows({selected: true});
-      }
+      // A kijelölt sorokra alkalmazzuk a %-os kedvezményt
+      let rows = kedvezmenyekTable.rows({selected: true})
 
       // Kedvezmény alkalmazása a táblázat soraira
       rows.every(function (rowIdx, tableLoop, rowLoop) {
           
         let termekNev = kedvezmenyekTable.cell(rowIdx, 1).data()
+        let tovabbiKedvezmeny = 0
 
         // Sor azonosítása terméknév szerint
         let row = tetelekTable.rows().data().filter(row => row[1] == termekNev)[0]
@@ -662,19 +663,35 @@ const discountPrice = (price, percentage, decimals = 0) => {
         // Eredeti árak
         let eredetiArak = {
           literAr: parseFloat(row[4].replace(/ /g, '')),
+          kiszereles: parseFloat(row[3].replace(/ /g, '')), 
           kiszerelesAr: parseFloat(row[5].replace(/ /g, '')),
           tajekoztatoErtek: parseInt(row[6].replace(/ /g, '')),
         }
 
         // Kedvezményes árak (2 tizedesjegyre kerekítve)
         let kedvezmenyesArak = {
+          kedvezmeny: szazalek != 0 ? ' + ' + szazalek + '%' : '',
           literAr: discountPrice(eredetiArak.literAr, szazalek, 2),
           kiszerelesAr: discountPrice(eredetiArak.literAr, szazalek, 2),
           tajekoztatoErtek: discountPrice(eredetiArak.tajekoztatoErtek, szazalek),
         }
 
+        // Raklapos tételek kedvezménye (EUR/L árból lejön további 0.05 EUR)
+        // Ha érte jön, akkor további 0.09 EUR lejön, a kedvezmények összevonódnak
+        if (raklapos || erteJon) {
+          
+          if (raklapos) tovabbiKedvezmeny += 0.05
+          if (erteJon) tovabbiKedvezmeny += 0.09 
+
+          kedvezmenyesArak.kedvezmeny = (tovabbiKedvezmeny > 0 && tovabbiKedvezmeny + ' EUR') + kedvezmenyesArak.kedvezmeny
+          kedvezmenyesArak.literAr = (kedvezmenyesArak.literAr - tovabbiKedvezmeny).toFixed(2)
+          kedvezmenyesArak.kiszerelesAr = ((kedvezmenyesArak.kiszerelesAr - tovabbiKedvezmeny) * eredetiArak.kiszereles).toFixed(2)
+          kedvezmenyesArak.tajekoztatoErtek = Math.ceil(kedvezmenyesArak.kiszerelesAr * arfolyam).toString().replace(thousandRegExp, " ");
+
+        }
+
         // Árak cseréje kedvezményesre
-        kedvezmenyekTable.cell(rowIdx, 4).data(szazalek == 0 ? '' : szazalek+' %')
+        kedvezmenyekTable.cell(rowIdx, 4).data(kedvezmenyesArak.kedvezmeny)
         kedvezmenyekTable.cell(rowIdx, 5).data(kedvezmenyesArak.literAr)
         kedvezmenyekTable.cell(rowIdx, 6).data(kedvezmenyesArak.kiszerelesAr)
         kedvezmenyekTable.cell(rowIdx, 7).data(kedvezmenyesArak.tajekoztatoErtek)
@@ -684,20 +701,17 @@ const discountPrice = (price, percentage, decimals = 0) => {
     }
 
     // Kedvezmény mértékének beállítása
-    if (mertek >= 0){
-      
-      // Korábbi kedvezmény törlése
-      let kedvezmenyekRow = kedvezmenyekTable.rows().data().filter(row => row[2] == "Kedvezmény")[0]
-      if (kedvezmenyekRow) {
-        kedvezmenyekTable.row(':last').remove()
-      } 
-      
-      // Ha a kedvezmény mértéke nem 0, akkor hozzáadjuk a kedvezmény sort
-      if (mertek !== 0){
-        kedvezmenyekTable.row.add(["", "", "Kedvezmény", "", -1 * mertek + ' EUR', "", -1 * mertek + ' EUR', ""])
-      }
-
-    }
+    // if (mertek >= 0){
+    //   // Korábbi kedvezmény törlése
+    //   let kedvezmenyekRow = kedvezmenyekTable.rows().data().filter(row => row[2] == "Kedvezmény")[0]
+    //   if (kedvezmenyekRow) {
+    //     kedvezmenyekTable.row(':last').remove()
+    //   } 
+    //   // Ha a kedvezmény mértéke nem 0, akkor hozzáadjuk a kedvezmény sort
+    //   if (mertek !== 0){
+    //     kedvezmenyekTable.row.add(["", "", "Kedvezmény", "", -1 * mertek + ' EUR', "", -1 * mertek + ' EUR', ""])
+    //   }
+    // }
 
     kedvezmenyekTable.draw();
     $('#kedvezmeny-cancel').trigger('click');

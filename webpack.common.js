@@ -17,7 +17,7 @@ const extractSass = new MiniCssExtractPlugin({
 
 const processHtml = new HtmlWebpackPlugin({
   template: './src/index.html',
-  title: 'Lubexpert Árajánlat App',
+  title: 'Lubexpert Árajánlat Készítő',
 });
 
 const scriptExtension = new ScriptExtHtmlWebpackPlugin({

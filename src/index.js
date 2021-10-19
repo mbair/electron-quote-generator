@@ -34,7 +34,7 @@ const createWindow = () => {
 
   // Open the DevTools during development.
   // if(process.env.NODE_ENV === 'development') {
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
     win.maximize();
   // }
 

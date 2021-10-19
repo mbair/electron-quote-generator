@@ -181,7 +181,7 @@ export const processFile = async (filePath, outputPath, browserWindow) => {
     dataRows[i][9] = dataRows[i][9].toString().replace(thousandRegExp, " ");
     dataRows[i][18] = Number(dataRows[i][18]).toFixed(2).toLocaleString().toString().replace(thousandRegExp, " ");
     dataRows[i][25] = Number(dataRows[i][25]).toFixed(2).toLocaleString().toString().replace(thousandRegExp, " ");
-    dataRows[i][27] = Math.ceil(dataRows[i][27]).toString().replace(thousandRegExp, " ");
+    dataRows[i][26] = Math.ceil(dataRows[i][26]).toString().replace(thousandRegExp, " ");
 
     arajanlatRows.push([
       dataRows[i][0],  // SAP kód: Kalkuláció A oszlopa
@@ -189,7 +189,7 @@ export const processFile = async (filePath, outputPath, browserWindow) => {
       dataRows[i][9],  // Kiszerelés: Kalkuláció J oszlopa
       dataRows[i][18], // Átadási ár: Kalkuláció S oszlopa
       dataRows[i][25], // Átadási ár EUR/kiszerelés: kiszerelés és a EUR/l szorzata
-      dataRows[i][27], // Tájékoztató nettó ár HUF
+      dataRows[i][26], // Tájékoztató nettó ár HUF
     ])
   }
 
