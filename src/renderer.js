@@ -341,9 +341,10 @@ const discountPrice = (price, percentage, decimals = 0) => {
   var tetelekTableConfig = {
     dom: 'Bfrtip',
     language: datatables_hu,
-    fixedColumns:   {
-      left: 2
-    },
+    fixedColumns: true,
+    // fixedColumns:   {
+    //   left: 2
+    // },
     columnDefs: [ 
       {
         targets: 0,
@@ -353,7 +354,15 @@ const discountPrice = (price, percentage, decimals = 0) => {
       {
         targets: [1, 3, 4, 5, 6],
         className: 'dt-body-right',
-      }
+      },
+      {
+        targets: [3, 4, 5],
+        render: $.fn.dataTable.render.number( ' ', ',', 2, '' )
+      },
+      {
+        targets: [6],
+        render: $.fn.dataTable.render.number( ' ', ',', 0, '' )
+      },
     ],
     select: {
       style:    'multi+shift',
@@ -422,7 +431,15 @@ const discountPrice = (price, percentage, decimals = 0) => {
       {
         targets: [1, 3, 4, 5, 6, 7],
         className: 'dt-body-right',
-      }
+      },
+      {
+        targets: [3, 5, 6],
+        render: $.fn.dataTable.render.number( ' ', ',', 2, '' )
+      },
+      {
+        targets: [7],
+        render: $.fn.dataTable.render.number( ' ', ',', 0, '' )
+      },
     ],
     createdRow: function(row, data, dataIndex) {
       if (data[2] == "Kedvezmény"){
@@ -641,7 +658,6 @@ const discountPrice = (price, percentage, decimals = 0) => {
     let raklapos = $('#raklapos-tetel').is(':checked');
     let erteJon = $('#szallitasi_forma').val() == 'Érte jön';
     let arfolyam = parseInt($('#arfolyam').text());
-    let thousandRegExp = /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g;
     // let mertek = parseInt($('#kedvezmeny-mertek').val()) || 0;
 
     // Kedvezmény %-ának beállítása
@@ -662,10 +678,10 @@ const discountPrice = (price, percentage, decimals = 0) => {
 
         // Eredeti árak
         let eredetiArak = {
-          literAr: parseFloat(row[4].replace(/ /g, '')),
-          kiszereles: parseFloat(row[3].replace(/ /g, '')), 
-          kiszerelesAr: parseFloat(row[5].replace(/ /g, '')),
-          tajekoztatoErtek: parseInt(row[6].replace(/ /g, '')),
+          literAr: row[4],
+          kiszereles: row[3], 
+          kiszerelesAr: row[5],
+          tajekoztatoErtek: row[6],
         }
 
         // Kedvezményes árak (2 tizedesjegyre kerekítve)
@@ -684,10 +700,9 @@ const discountPrice = (price, percentage, decimals = 0) => {
           if (erteJon) tovabbiKedvezmeny += 0.09 
 
           kedvezmenyesArak.kedvezmeny = (tovabbiKedvezmeny > 0 && tovabbiKedvezmeny + ' EUR') + kedvezmenyesArak.kedvezmeny
-          kedvezmenyesArak.literAr = (kedvezmenyesArak.literAr - tovabbiKedvezmeny).toFixed(2)
-          kedvezmenyesArak.kiszerelesAr = ((kedvezmenyesArak.kiszerelesAr - tovabbiKedvezmeny) * eredetiArak.kiszereles).toFixed(2)
-          kedvezmenyesArak.tajekoztatoErtek = Math.ceil(kedvezmenyesArak.kiszerelesAr * arfolyam).toString().replace(thousandRegExp, " ");
-
+          kedvezmenyesArak.literAr = kedvezmenyesArak.literAr - tovabbiKedvezmeny
+          kedvezmenyesArak.kiszerelesAr = (kedvezmenyesArak.kiszerelesAr - tovabbiKedvezmeny) * eredetiArak.kiszereles
+          kedvezmenyesArak.tajekoztatoErtek = Math.ceil(kedvezmenyesArak.kiszerelesAr * arfolyam)
         }
 
         // Árak cseréje kedvezményesre
