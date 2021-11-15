@@ -215,6 +215,9 @@ var arajanlatTemplate = [
         margin: [0,10,0,0],
     },
     {
+        text: 'Szállítási határidő készleten lévő termékek esetében: 24-48 óra, egyedi rendelés esetén 3-4 hét'
+    },
+    {
         text: '%szallitas_text%'
     },
     {
@@ -232,6 +235,7 @@ var arajanlatTemplate = [
         text: '5. Szolgáltatások:',
         decoration: 'underline',
         margin: [0,10,0,0],
+        pageBreak: 'before',
     },
     {
         text: 'Környezetvédelmi szolgáltatás: a Lubexpert Hungária Kft. vállalja a keletkezett fáradt olaj díjmentes elszállítatását, továbbá díjmentesen szállíttatja el a fáradt olaj tömegével arányos tömegű egyéb olajos hulladékot (olajos rongy, olajszűrő, olajos flakon, olajos fűrészpor). A díjtalan veszélyes hulladék elszállításának feltétele a GLN, KTJ, KÜJ szám megléte és igényléskor ezek megadása.'

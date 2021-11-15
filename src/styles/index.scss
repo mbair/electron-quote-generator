@@ -153,9 +153,21 @@ table {
 table.dataTable thead {
   text-align: center;
 }
-.filters th {
-    padding: 10px 10px;
-  }
+
+/* Alapértelmezett keresőmező elrejtése 
+  Ha datatables-ben kerül letiltásra, akkor az oszloponkénti keresés sem működik
+*/
+#tetelek-table_filter { display: none }
+
+/* Kereső mezők szélessége */
+.filters th { padding: 10px 5px !important }
+.filters > th:nth-child(2) > input[type=text] { width: 80px }    /* Kód */
+.filters > th:nth-child(3) > input[type=text] { width: 400px }   /* Terméknév */
+.filters > th:nth-child(4) > input[type=text] { width: 100px }   /* Kiszerelés */
+.filters > th:nth-child(5) > input[type=text] { display: none }  /* Átadási ár */
+.filters > th:nth-child(6) > input[type=text] { display: none }  /* Átadási ár */
+.filters > th:nth-child(7) > input[type=text] { display: none }  /* Tájékoztató ár */
+
 table.dataTable tbody tr.kedvezmeny-sor,
 table.dataTable.hover tbody tr.kedvezmeny-sor:hover, 
 table.dataTable.display tbody tr.kedvezmeny-sor:hover,

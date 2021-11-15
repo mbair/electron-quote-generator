@@ -316,12 +316,29 @@ const discountPrice = (price, percentage, decimals = 0) => {
   if (!price) return
 
   // Set Discount price decimals
-  price = (price * ((100 - percentage) / 100)).toFixed(decimals)
+  price = price * ((100 - percentage) / 100)
+  price = price.toFixed(decimals)
 
   // Thousand separated discount price
-  price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ") 
-  
+  // price = price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ")
+
   return price
+}
+
+const currencyFormatHU = (num, decimals = 0) => {
+  if (!num) return
+
+  // Ha már beállítottuk a formátumot
+  if (typeof num === "string" && [',',' '].some(el => num.includes(el))){
+    return num
+  }
+
+  return (Number(num)
+          .toFixed(decimals) // always two decimal digits
+          .toString()
+          .replace('.', ',') // replace decimal point character with ,
+          .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+  )
 }
 
 /**
@@ -345,6 +362,7 @@ const discountPrice = (price, percentage, decimals = 0) => {
     // fixedColumns:   {
     //   left: 2
     // },
+    // "bFilter": false, // Keresés
     columnDefs: [ 
       {
         targets: 0,
@@ -352,15 +370,39 @@ const discountPrice = (price, percentage, decimals = 0) => {
         className: 'select-checkbox',
       },
       {
+        targets: 1,
+        width: '80px'
+      },
+      {
+        targets: 2,
+        width: '400px'
+      },
+      {
+        targets: 3,
+        width: '100px'
+      },
+      {
+        targets: 4,
+        width: '350px'
+      },
+      {
+        targets: 5,
+        width: '150px'
+      },
+      {
+        targets: 6,
+        width: '250px'
+      },
+      {
         targets: [1, 3, 4, 5, 6],
         className: 'dt-body-right',
       },
       {
-        targets: [3, 4, 5],
+        targets: [4, 5],
         render: $.fn.dataTable.render.number( ' ', ',', 2, '' )
       },
       {
-        targets: [6],
+        targets: [3, 6],
         render: $.fn.dataTable.render.number( ' ', ',', 0, '' )
       },
     ],
@@ -390,8 +432,8 @@ const discountPrice = (price, percentage, decimals = 0) => {
               if (!title) return;
               title = cell.html().split('<br>')[0];
 
-              let cellWidth = 2 * Math.ceil($(cell).width());
-              cellWidth = '100%';
+              // let cellWidth = 2 * Math.ceil($(cell).width());
+              // cellWidth = '100%';
               // console.log('cellWidth', cellWidth);
 
               $(cell).html('<input type="text" placeholder="'+title+'"/>');
@@ -433,11 +475,11 @@ const discountPrice = (price, percentage, decimals = 0) => {
         className: 'dt-body-right',
       },
       {
-        targets: [3, 5, 6],
+        targets: [5, 6],
         render: $.fn.dataTable.render.number( ' ', ',', 2, '' )
       },
       {
-        targets: [7],
+        targets: [3, 7],
         render: $.fn.dataTable.render.number( ' ', ',', 0, '' )
       },
     ],
@@ -578,7 +620,7 @@ const discountPrice = (price, percentage, decimals = 0) => {
             '%fax%': $('#fax').val(),
 
             // Ajánlat
-            '%szallitas_text%': $('#szallitasi_forma').val() == 'Érte jön' ? 'Érte jön. Nem kér szállítást.' : 'Szállítási határidő: 3-4 hét. A szállítás díjmentes.',
+            '%szallitas_text%': $('#szallitasi_forma').val() == 'Érte jön' ? '' : 'A szállítás díjmentes.',
             '%evernyesseg%': $('#ervenyesseg').val(),
             '%fizetesi_mod%': $('#fizetesi_mod').val(),
             '%hatarido%': $('#fizetesi_mod').val() == 'Előre utalás' ? '0 nap' : $('#utalas_eddig').val(),
@@ -598,6 +640,12 @@ const discountPrice = (price, percentage, decimals = 0) => {
           // PDF Táblázat feltöltése a kedvezmény táblázat soraival
           let pdfTermekek = [template[7]['table']['body'][0]]
           kedvezmenyekTable.data().map(row => {
+
+            // Magyar számformátum használata
+            row[5] = currencyFormatHU(row[5], 2)
+            row[6] = currencyFormatHU(row[6], 2)
+            row[7] = currencyFormatHU(row[7])
+
             pdfTermekek.push([
               { text: row[1], alignment: 'right' }, // SAP kód
               { text: row[2], alignment: 'left'  }, // Terméknév
