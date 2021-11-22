@@ -758,7 +758,7 @@ const currencyFormatHU = (num, decimals = 0) => {
         kedvezmenyekTable.cell(rowIdx, 5).data(kedvezmenyesArak.literAr)
         kedvezmenyekTable.cell(rowIdx, 6).data(kedvezmenyesArak.kiszerelesAr)
         kedvezmenyekTable.cell(rowIdx, 7).data(kedvezmenyesArak.tajekoztatoErtek)
-
+        
       })
     
     }
@@ -807,7 +807,13 @@ const currencyFormatHU = (num, decimals = 0) => {
                   .addClass('d-none')
     }
   })
-  
+
+  // Szállítási forma szerint érvényesítjük a kedvezményt a termékekre
+  $('#szallitasi_forma').on('change', function(){
+    kedvezmenyekTable.rows().select()
+    kedvezmenySave()
+    kedvezmenyekTable.rows().deselect()
+  })
 
   // Example starter JavaScript for disabling form submissions if there are invalid fields
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
